@@ -1,4 +1,4 @@
-app = "fis-platform-map-purple-dawn-9359"
+app = "fis-platform-map"
 primary_region = "iad"
 
 [http_service]
