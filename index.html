@@ -4,3 +4,2794 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FIS Platform Map — Mapping the Money Lifecycle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ========================
+       DESIGN TOKENS
+    ======================== */
+    :root {
+      --text-xs:   clamp(0.7rem,  0.65rem + 0.2vw, 0.8rem);
+      --text-sm:   clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem);
+      --text-base: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-lg:   clamp(1rem,  0.9rem + 0.5vw, 1.2rem);
+      --text-xl:   clamp(1.25rem, 1rem + 0.75vw, 1.75rem);
+      --text-2xl:  clamp(1.75rem, 1.2rem + 1.5vw, 2.75rem);
+      --text-hero: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-5:  1.25rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-xl: 0.75rem;
+      --radius-full: 9999px;
+
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+      --content-narrow: 640px;
+      --content-default: 960px;
+      --content-wide: 1320px;
+
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    /* ========================
+       CUSTOM DARK FINTECH PALETTE
+    ======================== */
+    :root, [data-theme="dark"] {
+      --color-bg:              #0a0f1a;
+      --color-surface:         #111827;
+      --color-surface-2:       #1a2237;
+      --color-surface-3:       #1e293b;
+      --color-border:          #1e3050;
+      --color-border-subtle:   #263347;
+      --color-divider:         #1a2540;
+
+      --color-text:            #e2e8f0;
+      --color-text-muted:      #94a3b8;
+      --color-text-faint:      #475569;
+      --color-text-inverse:    #0a0f1a;
+
+      /* FIS Teal/Blue */
+      --color-primary:         #00a0df;
+      --color-primary-hover:   #0284c7;
+      --color-primary-dim:     #0c2d47;
+      --color-primary-highlight: rgba(0,160,223,0.1);
+
+      /* Segment colors */
+      --color-banking:         #0ea5e9;
+      --color-banking-dim:     #0c2233;
+      --color-banking-border:  #1e4a6e;
+      --color-capital:         #f59e0b;
+      --color-capital-dim:     #261a07;
+      --color-capital-border:  #5c3d10;
+      --color-infra:           #10b981;
+      --color-infra-dim:       #062016;
+      --color-infra-border:    #0f4433;
+
+      --color-amber:           #f59e0b;
+      --color-emerald:         #10b981;
+      --color-violet:          #818cf8;
+      --color-rose:            #fb7185;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.6);
+    }
+
+    [data-theme="light"] {
+      --color-bg:              #f0f4f8;
+      --color-surface:         #ffffff;
+      --color-surface-2:       #f8fafc;
+      --color-surface-3:       #f1f5f9;
+      --color-border:          #cbd5e1;
+      --color-border-subtle:   #e2e8f0;
+      --color-divider:         #e2e8f0;
+
+      --color-text:            #0f172a;
+      --color-text-muted:      #475569;
+      --color-text-faint:      #94a3b8;
+      --color-text-inverse:    #ffffff;
+
+      --color-primary:         #0284c7;
+      --color-primary-hover:   #0369a1;
+      --color-primary-dim:     #e0f2fe;
+      --color-primary-highlight: rgba(2,132,199,0.08);
+
+      --color-banking:         #0284c7;
+      --color-banking-dim:     #e0f2fe;
+      --color-banking-border:  #bae6fd;
+      --color-capital:         #d97706;
+      --color-capital-dim:     #fef3c7;
+      --color-capital-border:  #fde68a;
+      --color-infra:           #059669;
+      --color-infra-dim:       #d1fae5;
+      --color-infra-border:    #a7f3d0;
+
+      --color-amber:           #d97706;
+      --color-emerald:         #059669;
+      --color-violet:          #6366f1;
+      --color-rose:            #e11d48;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* ========================
+       BASE RESET
+    ======================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+      scroll-padding-top: 64px;
+    }
+
+    body {
+      min-height: 100dvh;
+      line-height: 1.6;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+    }
+
+    img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+    button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+    table { border-collapse: collapse; width: 100%; }
+
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ========================
+       NAV
+    ======================== */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,15,26,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-6);
+      gap: var(--space-6);
+    }
+
+    [data-theme="light"] .site-nav {
+      background: rgba(240,244,248,0.92);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      text-decoration: none;
+      color: var(--color-text);
+      flex-shrink: 0;
+    }
+
+    .nav-logo svg { color: var(--color-primary); }
+
+    .nav-wordmark {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      overflow-x: auto;
+      flex: 1;
+      list-style: none;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-links a {
+      display: block;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: color var(--transition-interactive), background var(--transition-interactive);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-text);
+      background: var(--color-surface-2);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-shrink: 0;
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      transition: color var(--transition-interactive), background var(--transition-interactive);
+    }
+    .theme-toggle:hover {
+      color: var(--color-text);
+      background: var(--color-surface-2);
+    }
+
+    /* ========================
+       PAGE LAYOUT
+    ======================== */
+    .page-container {
+      max-width: var(--content-wide);
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+    }
+
+    section {
+      padding: var(--space-16) 0;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 1px;
+      background: var(--color-primary);
+    }
+
+    .section-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+    }
+
+    .section-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      max-width: 640px;
+      margin-bottom: var(--space-10);
+    }
+
+    /* ========================
+       HERO
+    ======================== */
+    #hero {
+      padding: var(--space-20) 0 var(--space-16);
+      border-bottom: 1px solid var(--color-divider);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,160,223,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-size: var(--text-hero);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: var(--space-3);
+    }
+
+    .hero-title span {
+      color: var(--color-primary);
+    }
+
+    .hero-tagline {
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      font-weight: 400;
+      margin-bottom: var(--space-10);
+      letter-spacing: 0.01em;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    .hero-stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      min-width: 160px;
+    }
+
+    .hero-stat-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-primary);
+      line-height: 1.1;
+      margin-bottom: var(--space-1);
+    }
+
+    .hero-stat-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ========================
+       SEGMENT CARDS
+    ======================== */
+    .segments-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+      margin-bottom: var(--space-10);
+    }
+
+    @media (max-width: 768px) {
+      .segments-grid { grid-template-columns: 1fr; }
+    }
+
+    .segment-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--transition-interactive);
+    }
+
+    .segment-card.banking { border-top: 3px solid var(--color-banking); }
+    .segment-card.capital { border-top: 3px solid var(--color-capital); }
+
+    .segment-card:hover { border-color: var(--color-border-subtle); }
+
+    .segment-header {
+      padding: var(--space-5) var(--space-6);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .segment-header:hover .segment-title { color: var(--color-primary); }
+
+    .segment-badge {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-2);
+      display: inline-block;
+    }
+
+    .banking .segment-badge { background: var(--color-banking-dim); color: var(--color-banking); border: 1px solid var(--color-banking-border); }
+    .capital .segment-badge { background: var(--color-capital-dim); color: var(--color-capital); border: 1px solid var(--color-capital-border); }
+
+    .segment-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-text);
+      transition: color var(--transition-interactive);
+      margin-bottom: var(--space-1);
+    }
+
+    .segment-revenue {
+      font-family: var(--font-mono);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: var(--space-2);
+    }
+
+    .banking .segment-revenue { color: var(--color-banking); }
+    .capital .segment-revenue { color: var(--color-capital); }
+
+    .segment-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .segment-toggle {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--color-text-muted);
+      transition: all var(--transition-interactive);
+    }
+
+    .segment-card[data-open="true"] .segment-toggle {
+      background: var(--color-primary-dim);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      transform: rotate(180deg);
+    }
+
+    .segment-body {
+      display: none;
+      padding: 0 var(--space-6) var(--space-6);
+      border-top: 1px solid var(--color-divider);
+    }
+
+    .segment-card[data-open="true"] .segment-body {
+      display: block;
+    }
+
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding-top: var(--space-4);
+    }
+
+    .product-item {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .product-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      cursor: pointer;
+    }
+
+    .product-item-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .product-item-tag {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      white-space: nowrap;
+    }
+
+    .product-item-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+      line-height: 1.5;
+    }
+
+    .product-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* ========================
+       PLATFORM TOPOLOGY
+    ======================== */
+    .topology-wrapper {
+      display: grid;
+      grid-template-columns: 80px 1fr 200px;
+      gap: var(--space-4);
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .topology-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .topology-left-label, .topology-right-panel { display: none; }
+    }
+
+    .topology-left-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+    }
+
+    .topology-title-vertical {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+
+    .topology-flow-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--color-text-faint);
+    }
+
+    .topology-flow-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      color: var(--color-text-faint);
+    }
+
+    .topology-layers {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: var(--space-2);
+      position: relative;
+    }
+
+    .topology-layers::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(to bottom, var(--color-border) 0, var(--color-border) 4px, transparent 4px, transparent 8px);
+      transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .layer {
+      position: relative;
+      z-index: 1;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      transition: border-color var(--transition-interactive), background var(--transition-interactive);
+      cursor: default;
+    }
+
+    .layer:hover {
+      border-color: var(--color-border-subtle);
+      background: var(--color-surface-2);
+    }
+
+    .layer.l1 { border-left: 3px solid var(--color-infra); }
+    .layer.l2 { border-left: 3px solid var(--color-infra); }
+    .layer.l3 { border-left: 3px solid var(--color-banking); }
+    .layer.l4 { border-left: 3px solid var(--color-violet); background: rgba(129,140,248,0.04); }
+    .layer.l5 { border-left: 3px solid var(--color-rose); background: rgba(251,113,133,0.04); }
+    .layer.l6 { border-left: 3px solid var(--color-primary); }
+    .layer.l7 { border-left: 3px solid var(--color-capital); }
+
+    .layer-id {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-faint);
+      width: 20px;
+      flex-shrink: 0;
+    }
+
+    .layer-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .layer-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+
+    .layer-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .layer-components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .layer-chip {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    .layer.l1 .layer-chip { border-color: var(--color-infra-border); color: var(--color-infra); background: var(--color-infra-dim); }
+    .layer.l2 .layer-chip { border-color: var(--color-infra-border); color: var(--color-infra); background: var(--color-infra-dim); }
+    .layer.l3 .layer-chip { border-color: var(--color-banking-border); color: var(--color-banking); background: var(--color-banking-dim); }
+    .layer.l4 .layer-chip { border-color: rgba(129,140,248,0.3); color: var(--color-violet); background: rgba(129,140,248,0.08); }
+    .layer.l5 .layer-chip { border-color: rgba(251,113,133,0.3); color: var(--color-rose); background: rgba(251,113,133,0.08); }
+    .layer.l6 .layer-chip { border-color: var(--color-primary-dim); color: var(--color-primary); background: var(--color-primary-highlight); }
+    .layer.l7 .layer-chip { border-color: var(--color-capital-border); color: var(--color-capital); background: var(--color-capital-dim); }
+
+    .cross-cutting-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: var(--space-1) var(--space-3);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .topology-right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding-top: var(--space-2);
+    }
+
+    .deploy-mode {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      flex: 1;
+    }
+
+    .deploy-mode-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-primary);
+      margin-bottom: var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .deploy-mode-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .deploy-mode-cores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+    }
+
+    /* ========================
+       MONEY LIFECYCLE
+    ======================== */
+    .lifecycle-channel-bar {
+      background: var(--color-capital-dim);
+      border: 1px solid var(--color-capital-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-5);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .lifecycle-channel-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-capital);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .lifecycle-channel-products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .lifecycle-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .lifecycle-grid {
+        grid-template-columns: 1fr;
+      }
+      .lifecycle-arrow-col { display: none; }
+    }
+
+    .lifecycle-zone {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+
+    .lifecycle-zone.at-rest { border-top: 3px solid var(--color-banking); }
+    .lifecycle-zone.in-motion { border-top: 3px solid var(--color-primary); }
+    .lifecycle-zone.at-work { border-top: 3px solid var(--color-capital); }
+
+    .lifecycle-zone-header {
+      margin-bottom: var(--space-4);
+    }
+
+    .lifecycle-zone-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .at-rest .lifecycle-zone-badge { background: var(--color-banking-dim); color: var(--color-banking); border: 1px solid var(--color-banking-border); }
+    .in-motion .lifecycle-zone-badge { background: var(--color-primary-dim); color: var(--color-primary); border: 1px solid var(--color-primary); }
+    .at-work .lifecycle-zone-badge { background: var(--color-capital-dim); color: var(--color-capital); border: 1px solid var(--color-capital-border); }
+
+    .lifecycle-zone-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+
+    .lifecycle-zone-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .lifecycle-products {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .lifecycle-product {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      color: var(--color-text);
+    }
+
+    .lifecycle-product::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .at-rest .lifecycle-product::before { background: var(--color-banking); }
+    .in-motion .lifecycle-product::before { background: var(--color-primary); }
+    .at-work .lifecycle-product::before { background: var(--color-capital); }
+
+    .lifecycle-arrow-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--space-2);
+      color: var(--color-text-faint);
+    }
+
+    .lifecycle-capabilities {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-divider);
+    }
+
+    .lifecycle-cap-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-2);
+    }
+
+    .lifecycle-cap-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .lifecycle-cap-item {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      padding-left: var(--space-3);
+      position: relative;
+    }
+
+    .lifecycle-cap-item::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--color-text-faint);
+    }
+
+    /* ========================
+       TRANSACTION FLOWS
+    ======================== */
+    .flow-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-divider);
+      padding-bottom: var(--space-4);
+    }
+
+    .flow-tab {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      border: 1px solid transparent;
+      transition: all var(--transition-interactive);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .flow-tab:hover {
+      color: var(--color-text);
+      background: var(--color-surface-2);
+    }
+
+    .flow-tab.active {
+      color: var(--color-primary);
+      background: var(--color-primary-highlight);
+      border-color: var(--color-primary);
+    }
+
+    .flow-panel { display: none; }
+    .flow-panel.active { display: block; }
+
+    .flow-diagram {
+      overflow-x: auto;
+      padding-bottom: var(--space-4);
+    }
+
+    .flow-chain {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      min-width: max-content;
+      padding: var(--space-4) 0;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      position: relative;
+    }
+
+    .flow-step-box {
+      width: 140px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      text-align: center;
+      transition: border-color var(--transition-interactive);
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flow-step-box:hover { border-color: var(--color-primary); }
+
+    .flow-step-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-1);
+    }
+
+    .flow-step-name {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.3;
+      margin-bottom: var(--space-1);
+    }
+
+    .flow-step-fis {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-primary);
+      line-height: 1.3;
+      margin-top: var(--space-1);
+    }
+
+    .flow-connector {
+      display: flex;
+      align-items: center;
+      padding: 0;
+      margin-top: 28px;
+      flex-shrink: 0;
+    }
+
+    .flow-connector-line {
+      width: 24px;
+      height: 1px;
+      background: var(--color-border-subtle);
+    }
+
+    .flow-connector svg {
+      color: var(--color-border-subtle);
+      flex-shrink: 0;
+    }
+
+    /* ========================
+       GLOSSARY
+    ======================== */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .glossary-item {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .glossary-term {
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      transition: background var(--transition-interactive);
+    }
+
+    .glossary-term:hover { background: var(--color-surface-2); }
+
+    .glossary-term-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-primary);
+    }
+
+    .glossary-toggle {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-faint);
+      flex-shrink: 0;
+      transition: transform var(--transition-interactive);
+    }
+
+    .glossary-item[data-open="true"] .glossary-toggle {
+      transform: rotate(45deg);
+      color: var(--color-primary);
+    }
+
+    .glossary-def {
+      display: none;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      border-top: 1px solid var(--color-divider);
+    }
+
+    .glossary-item[data-open="true"] .glossary-def { display: block; }
+
+    /* ========================
+       VALUE MATRIX
+    ======================== */
+    .value-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 900px) {
+      .value-matrix { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .value-matrix { grid-template-columns: 1fr; }
+    }
+
+    .value-col {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .value-col-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .value-col-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-3);
+    }
+
+    .value-col:nth-child(1) .value-col-icon { background: var(--color-banking-dim); color: var(--color-banking); }
+    .value-col:nth-child(2) .value-col-icon { background: var(--color-infra-dim); color: var(--color-infra); }
+    .value-col:nth-child(3) .value-col-icon { background: var(--color-primary-dim); color: var(--color-primary); }
+    .value-col:nth-child(4) .value-col-icon { background: var(--color-capital-dim); color: var(--color-capital); }
+
+    .value-col-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+
+    .value-col-sub {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+    }
+
+    .value-col-body {
+      padding: var(--space-4) var(--space-5);
+    }
+
+    .value-prop {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--color-divider);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .value-prop:last-child { border-bottom: none; }
+
+    .value-prop::before {
+      content: '→';
+      color: var(--color-text-faint);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ========================
+       TIMELINE
+    ======================== */
+    .timeline {
+      position: relative;
+      padding-left: var(--space-8);
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--color-border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: var(--space-8);
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -29px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      transition: border-color var(--transition-interactive);
+    }
+
+    .timeline-item:hover .timeline-dot {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+    }
+
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-primary);
+      margin-bottom: var(--space-1);
+      font-weight: 500;
+    }
+
+    .timeline-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+
+    .timeline-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    .timeline-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .badge-divest { background: rgba(251,113,133,0.15); color: var(--color-rose); border: 1px solid rgba(251,113,133,0.3); }
+    .badge-acquire { background: var(--color-infra-dim); color: var(--color-infra); border: 1px solid var(--color-infra-border); }
+    .badge-product { background: var(--color-primary-dim); color: var(--color-primary); border: 1px solid var(--color-primary); }
+    .badge-strategy { background: var(--color-capital-dim); color: var(--color-capital); border: 1px solid var(--color-capital-border); }
+
+    /* ========================
+       FOOTER
+    ======================== */
+    footer {
+      padding: var(--space-10) 0;
+      border-top: 1px solid var(--color-divider);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-6);
+    }
+
+    .footer-sources {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .footer-sources-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-4);
+    }
+
+    .source-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      list-style: none;
+    }
+
+    .source-list a {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color var(--transition-interactive);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .source-list a:hover { color: var(--color-primary); }
+
+    .source-list a::before {
+      content: '↗';
+      color: var(--color-text-faint);
+      font-size: 10px;
+    }
+
+    .footer-copy {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    /* ========================
+       UTILITIES
+    ======================== */
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+    }
+
+    .text-mono { font-family: var(--font-mono); }
+    .text-muted { color: var(--color-text-muted); }
+    .text-faint { color: var(--color-text-faint); }
+    .text-primary { color: var(--color-primary); }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) { --color-bg: #0a0f1a; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-full); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--color-border-subtle); }
+  </style>
+</head>
+<body>
+
+<!-- ======================== NAV ======================== -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo" aria-label="FIS Map home">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" opacity="0.9"/>
+      <rect x="15" y="2" width="11" height="11" rx="2" fill="currentColor" opacity="0.5"/>
+      <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" opacity="0.5"/>
+      <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" opacity="0.7"/>
+    </svg>
+    <span class="nav-wordmark">FIS Map</span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="#segments">Segments</a></li>
+    <li><a href="#topology">Topology</a></li>
+    <li><a href="#lifecycle">Lifecycle</a></li>
+    <li><a href="#flows">Tx Flows</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#value">Value</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ======================== HERO ======================== -->
+<section id="hero" aria-label="Hero">
+  <div class="page-container">
+    <div class="hero-eyebrow">
+      <span class="hero-dot" aria-hidden="true"></span>
+      Fidelity National Information Services — Interactive Platform Map
+    </div>
+    <h1 class="hero-title">FIS <span>Platform</span> Intelligence</h1>
+    <p class="hero-tagline">Mapping the Money Lifecycle</p>
+    <div class="hero-stats" role="list" aria-label="Key statistics">
+      <div class="hero-stat" role="listitem">
+        <div class="hero-stat-value">$10.7B</div>
+        <div class="hero-stat-label">Annual Revenue</div>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <div class="hero-stat-value">2</div>
+        <div class="hero-stat-label">Business Segments</div>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <div class="hero-stat-value">75+</div>
+        <div class="hero-stat-label">Countries Served</div>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <div class="hero-stat-value">40B+</div>
+        <div class="hero-stat-label">Transactions/Year</div>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <div class="hero-stat-value">1.5B+</div>
+        <div class="hero-stat-label">API Calls/Month</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SEGMENTS ======================== -->
+<section id="segments" aria-label="Business Segments">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">01 — Business Structure</div>
+    <h2 class="section-title">Business Segments</h2>
+    <p class="section-desc">FIS operates two primary business segments, each targeting distinct market verticals with specialized product suites. Click to expand product lines.</p>
+
+    <div class="segments-grid">
+
+      <!-- Banking Solutions -->
+      <div class="segment-card banking" data-open="false" id="seg-banking">
+        <div class="segment-header" role="button" tabindex="0" aria-expanded="false" aria-controls="seg-banking-body" onclick="toggleCard('seg-banking')">
+          <div>
+            <div class="segment-badge">Banking Solutions</div>
+            <h3 class="segment-title">Banking Solutions</h3>
+            <div class="segment-revenue">$7.285B</div>
+            <p class="segment-desc">Core processing, transaction processing, and complementary applications serving global financial institutions, US regional/community banks, credit unions, and commercial lenders.</p>
+          </div>
+          <div class="segment-toggle" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="segment-body" id="seg-banking-body">
+          <div class="product-list">
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Core Processing &amp; Ancillary Applications</span>
+                <span class="product-item-tag">System of Record</span>
+              </div>
+              <p class="product-item-desc">Maintains primary records of customer accounts. Deposit/lending, customer management, central management systems.</p>
+              <div class="product-tags">
+                <span class="tag">IBS (Integrated Banking Solution)</span>
+                <span class="tag">Horizon Banking System</span>
+                <span class="tag">Modern Banking Platform</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Digital (Mobile, Online, Branch)</span>
+                <span class="product-item-tag">Omnichannel</span>
+              </div>
+              <p class="product-item-desc">Omnichannel digital banking platform with retail, business, and employee-facing modules. Integrates with Glia AI for customer interaction.</p>
+              <div class="product-tags">
+                <span class="tag">Digital One</span>
+                <span class="tag">Digital One Flex Mobile</span>
+                <span class="tag">Digital One Business</span>
+                <span class="tag">Digital One Banker</span>
+                <span class="tag">Digital One Teller</span>
+                <span class="tag">FIS Business Hub</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Card &amp; Retail Payments</span>
+                <span class="product-item-tag">Issuer Processing</span>
+              </div>
+              <p class="product-item-desc">Credit/debit card issuance and processing. Virtual cards, gift cards, reloadable cards. Loyalty programs. AP/expense management. 40B+ transactions/year across 75+ countries via the Jan 2026 Issuer Solutions acquisition.</p>
+              <div class="product-tags">
+                <span class="tag">FIS Total Issuing Solutions</span>
+                <span class="tag">Credit Card Processing</span>
+                <span class="tag">Debit Card Processing</span>
+                <span class="tag">Prepaid Card Solutions</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Electronic Funds Transfer &amp; Network</span>
+                <span class="product-item-tag">Payment Rails</span>
+              </div>
+              <p class="product-item-desc">Settlement and card management. Debit, prepaid, ATM, credit networks. Real-time payments, A2A transfers. Money Movement Hub is cloud-native (AWS), single API for instant payments, ACH, wires.</p>
+              <div class="product-tags">
+                <span class="tag">NYCE Network</span>
+                <span class="tag">Money Movement Hub</span>
+                <span class="tag">Payment Hub</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Fraud, Risk Management &amp; Compliance</span>
+                <span class="product-item-tag">AI/ML</span>
+              </div>
+              <p class="product-item-desc">Full account lifecycle: KYC, new account decisioning, transaction management, fraud detection, collections. Predictive analytics, AI modeling, shared databases.</p>
+              <div class="product-tags">
+                <span class="tag">KYC/AML Solutions</span>
+                <span class="tag">Fraud Detection (AI/ML)</span>
+                <span class="tag">Account Decisioning</span>
+                <span class="tag">Collections</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Wealth &amp; Retirement</span>
+                <span class="product-item-tag">Asset Management</span>
+              </div>
+              <p class="product-item-desc">Serves banks, trust companies, brokerage firms, insurance firms, retirement plan professionals. Client acquisition, transaction management, trust accounting.</p>
+              <div class="product-tags">
+                <span class="tag">Trust Accounting</span>
+                <span class="tag">Recordkeeping</span>
+                <span class="tag">Retirement Platform</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Item Processing &amp; Output</span>
+                <span class="product-item-tag">Operations</span>
+              </div>
+              <p class="product-item-desc">Data capture from checks/tickets, imaging, sorting, exception processing, archiving, statement production. Print/mail, card personalization.</p>
+              <div class="product-tags">
+                <span class="tag">Check Capture</span>
+                <span class="tag">Remittance Processing</span>
+                <span class="tag">Mobile Deposit Capture</span>
+                <span class="tag">Document Management</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capital Markets -->
+      <div class="segment-card capital" data-open="false" id="seg-capital">
+        <div class="segment-header" role="button" tabindex="0" aria-expanded="false" aria-controls="seg-capital-body" onclick="toggleCard('seg-capital')">
+          <div>
+            <div class="segment-badge">Capital Markets</div>
+            <h3 class="segment-title">Capital Markets</h3>
+            <div class="segment-revenue">$3.196B</div>
+            <p class="segment-desc">Buy-side and sell-side solutions for trading, treasury, risk, lending, and asset services. Serves asset managers, PE firms, broker-dealers, insurers, auto/asset financiers, and corporates.</p>
+          </div>
+          <div class="segment-toggle" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="segment-body" id="seg-capital-body">
+          <div class="product-list">
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Trading &amp; Asset Services</span>
+                <span class="product-item-tag">Front-to-Back</span>
+              </div>
+              <p class="product-item-desc">Front-to-back trade lifecycle: market making, risk mgmt, cleared derivatives, securities processing, securities finance, tax, AML, trade surveillance. Asset servicing: research, portfolio mgmt, order mgmt, valuation, corporate actions, reconciliation, investor accounting.</p>
+              <div class="product-tags">
+                <span class="tag">Cross-Asset Trading &amp; Risk Platform</span>
+                <span class="tag">Securities Processing</span>
+                <span class="tag">Cleared Derivatives</span>
+                <span class="tag">Transfer Agency</span>
+                <span class="tag">Investment Accounting</span>
+                <span class="tag">Reconciliation</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Lending Solutions</span>
+                <span class="product-item-tag">Full Lifecycle</span>
+              </div>
+              <p class="product-item-desc">Full lifecycle: origination, credit assessment, risk rating, servicing, analytics. Leveraged/syndicated loan mgmt, secondary market trading, bookrunning. Auto/equipment finance: origination, pricing, credit decisioning, contract mgmt, servicing, collections.</p>
+              <div class="product-tags">
+                <span class="tag">Commercial Lending Platform</span>
+                <span class="tag">Syndicated Loans</span>
+                <span class="tag">Asset Finance/Leasing</span>
+              </div>
+            </div>
+            <div class="product-item">
+              <div class="product-item-header">
+                <span class="product-item-name">Treasury, Risk &amp; Payment Suite</span>
+                <span class="product-item-tag">Cloud SaaS</span>
+              </div>
+              <p class="product-item-desc">Cash positioning, liquidity mgmt, risk (VaR, FX, IR, commodity, counterparty), hedge accounting, debt/investment mgmt, netting, bank connectivity. FIS is a top-5 SWIFT partner. Cloud-native SaaS serving corporates, banks, insurers, government.</p>
+              <div class="product-tags">
+                <span class="tag">Treasury Management</span>
+                <span class="tag">Cash Forecasting</span>
+                <span class="tag">Risk Analytics</span>
+                <span class="tag">Payment Hub</span>
+                <span class="tag">FX/IR/Commodity Risk</span>
+                <span class="tag">SWIFT Connectivity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== TOPOLOGY ======================== -->
+<section id="topology" aria-label="Platform Architecture">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">02 — Platform Topology</div>
+    <h2 class="section-title">Platform Architecture Layers</h2>
+    <p class="section-desc">FIS's platform stack spans 7 layers from cloud infrastructure up through customer-facing channels. Cross-cutting layers span the full stack. Flow direction: bottom (infrastructure) → top (channels).</p>
+
+    <div class="topology-wrapper">
+
+      <!-- Left label -->
+      <div class="topology-left-label" aria-hidden="true">
+        <div class="topology-title-vertical">FIS Platform Topology</div>
+        <div class="topology-flow-arrow">
+          <svg width="16" height="60" viewBox="0 0 16 60" fill="none">
+            <line x1="8" y1="55" x2="8" y2="5" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2" opacity="0.4"/>
+            <path d="M4 10 L8 4 L12 10" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+          </svg>
+          <span class="topology-flow-label">bottom → top</span>
+        </div>
+      </div>
+
+      <!-- Layers (displayed bottom to top via flex-direction: column-reverse) -->
+      <div class="topology-layers" role="list" aria-label="Platform layers from bottom to top">
+
+        <!-- L1 - bottom -->
+        <div class="layer l1" role="listitem" aria-label="Layer 1: Cloud Infrastructure">
+          <span class="layer-id">L1</span>
+          <div class="layer-content">
+            <div class="layer-name">Cloud Infrastructure</div>
+            <div class="layer-desc">Multi-cloud native (AWS + FIS Private Cloud). 100% cloud, zero legacy. Containerized, portable workloads. Hundreds of thousands of vCPUs.</div>
+            <div class="layer-components">
+              <span class="layer-chip">AWS</span>
+              <span class="layer-chip">FIS Private Cloud</span>
+              <span class="layer-chip">Containerized</span>
+              <span class="layer-chip">Tens of Billions of Txns/Year</span>
+              <span class="layer-chip">1.5B+ API Calls/Month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- L2 -->
+        <div class="layer l2" role="listitem" aria-label="Layer 2: Universal Ledger">
+          <span class="layer-id">L2</span>
+          <div class="layer-content">
+            <div class="layer-name">Universal Ledger &amp; Orchestration</div>
+            <div class="layer-desc">Foundation layer. Underpins core processing across all products. Enables "coreless" operation for digital banks. Core-agnostic: works with FIS cores, third-party cores, or built-in ledger.</div>
+            <div class="layer-components">
+              <span class="layer-chip">Universal Ledger</span>
+              <span class="layer-chip">Orchestration Engine</span>
+              <span class="layer-chip">Core-Agnostic</span>
+              <span class="layer-chip">Coreless Support</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- L3 -->
+        <div class="layer l3" role="listitem" aria-label="Layer 3: Core Platform Services">
+          <span class="layer-id">L3</span>
+          <div class="layer-content">
+            <div class="layer-name">Core Platform Services</div>
+            <div class="layer-desc">Modular components exposed as services. Each is independently deployable and composable.</div>
+            <div class="layer-components">
+              <span class="layer-chip">Account Opening</span>
+              <span class="layer-chip">Money Movement</span>
+              <span class="layer-chip">Cards</span>
+              <span class="layer-chip">Fraud</span>
+              <span class="layer-chip">Lending</span>
+              <span class="layer-chip">Payments</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- L4 - cross-cutting -->
+        <div class="layer l4" role="listitem" aria-label="Layer 4: Data and AI — cross-cutting">
+          <span class="layer-id">L4</span>
+          <div class="layer-content">
+            <div class="layer-name">Data &amp; AI Layer</div>
+            <div class="layer-desc">Common data infrastructure across all products. Analytics, ML/AI models, real-time insights. Powers fraud detection, personalization, decisioning. Ethos data ecosystem for unified financial data.</div>
+            <div class="layer-components">
+              <span class="layer-chip">AI/ML Models</span>
+              <span class="layer-chip">Ethos Data Ecosystem</span>
+              <span class="layer-chip">Real-time Analytics</span>
+              <span class="layer-chip">Fraud Intelligence</span>
+            </div>
+          </div>
+          <span class="cross-cutting-label">↕ Cross-cutting</span>
+        </div>
+
+        <!-- L5 - cross-cutting -->
+        <div class="layer l5" role="listitem" aria-label="Layer 5: Risk and Program Management — cross-cutting">
+          <span class="layer-id">L5</span>
+          <div class="layer-content">
+            <div class="layer-name">Risk &amp; Program Management</div>
+            <div class="layer-desc">Cross-cutting controls layer: compliance, KYC/AML, servicing, analytics, regulatory reporting. Spans all products.</div>
+            <div class="layer-components">
+              <span class="layer-chip">KYC/AML</span>
+              <span class="layer-chip">Regulatory Reporting</span>
+              <span class="layer-chip">FFIEC Compliance</span>
+              <span class="layer-chip">DORA (EU)</span>
+              <span class="layer-chip">Servicing</span>
+            </div>
+          </div>
+          <span class="cross-cutting-label">↕ Cross-cutting</span>
+        </div>
+
+        <!-- L6 -->
+        <div class="layer l6" role="listitem" aria-label="Layer 6: Unified API Access">
+          <span class="layer-id">L6</span>
+          <div class="layer-content">
+            <div class="layer-name">Unified API Access Layer (Code Connect)</div>
+            <div class="layer-desc">Single integration point. API marketplace for FIS solutions, bank APIs, and third-party/fintech APIs. Lifecycle management, security, monitoring, monetization.</div>
+            <div class="layer-components">
+              <span class="layer-chip">Code Connect</span>
+              <span class="layer-chip">Banking &amp; Wealth APIs</span>
+              <span class="layer-chip">Payments APIs</span>
+              <span class="layer-chip">Institutional APIs</span>
+              <span class="layer-chip">Corporate Solutions APIs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- L7 - top -->
+        <div class="layer l7" role="listitem" aria-label="Layer 7: Channels and Interfaces">
+          <span class="layer-id">L7</span>
+          <div class="layer-content">
+            <div class="layer-name">Channels &amp; Interfaces</div>
+            <div class="layer-desc">Customer and banker-facing touchpoints. All channels share common platform services and real-time data.</div>
+            <div class="layer-components">
+              <span class="layer-chip">Digital One (Retail)</span>
+              <span class="layer-chip">Digital One Business</span>
+              <span class="layer-chip">Digital One Banker</span>
+              <span class="layer-chip">Mobile Apps</span>
+              <span class="layer-chip">Branch</span>
+              <span class="layer-chip">ATM</span>
+              <span class="layer-chip">Third-party Apps</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right panel: Deployment modes -->
+      <div class="topology-right-panel" aria-label="Deployment modes">
+        <div style="font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-faint); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-divider);">Deployment Modes</div>
+
+        <div class="deploy-mode">
+          <div class="deploy-mode-title">FIS Core</div>
+          <div class="deploy-mode-desc">Full-stack FIS. Uses FIS core processing systems as the system of record.</div>
+          <div class="deploy-mode-cores">
+            <span class="tag">IBS</span>
+            <span class="tag">Horizon</span>
+            <span class="tag">MBP</span>
+          </div>
+        </div>
+
+        <div class="deploy-mode">
+          <div class="deploy-mode-title">Third-Party Core</div>
+          <div class="deploy-mode-desc">FIS platform wraps any non-FIS core. Core-agnostic layer handles interop.</div>
+          <div class="deploy-mode-cores">
+            <span class="tag">Any Core</span>
+            <span class="tag">Code Connect</span>
+          </div>
+        </div>
+
+        <div class="deploy-mode">
+          <div class="deploy-mode-title">Coreless</div>
+          <div class="deploy-mode-desc">Universal Ledger only. No traditional core. Designed for neobanks and digital-only FIs.</div>
+          <div class="deploy-mode-cores">
+            <span class="tag">Universal Ledger</span>
+            <span class="tag">Neobanks</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LIFECYCLE ======================== -->
+<section id="lifecycle" aria-label="Money Lifecycle Flow Map">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">03 — Money Lifecycle</div>
+    <h2 class="section-title">Money Lifecycle Flow Map</h2>
+    <p class="section-desc">How FIS products map to each stage of the money lifecycle — from storage through movement to deployment. Digital One spans all three stages as the unified channel layer.</p>
+
+    <!-- Channel bar spanning all three zones -->
+    <div class="lifecycle-channel-bar" aria-label="Digital One spans all lifecycle stages">
+      <div>
+        <div class="lifecycle-channel-title">↕ Channel Layer — Spans All Stages</div>
+      </div>
+      <div class="lifecycle-channel-products">
+        <span class="tag" style="color: var(--color-capital); border-color: var(--color-capital-border);">Digital One (Retail)</span>
+        <span class="tag" style="color: var(--color-capital); border-color: var(--color-capital-border);">Digital One Business</span>
+        <span class="tag" style="color: var(--color-capital); border-color: var(--color-capital-border);">Digital One Banker</span>
+        <span class="tag" style="color: var(--color-capital); border-color: var(--color-capital-border);">Code Connect APIs</span>
+      </div>
+    </div>
+
+    <div class="lifecycle-grid">
+
+      <!-- Money at Rest -->
+      <div class="lifecycle-zone at-rest">
+        <div class="lifecycle-zone-header">
+          <div class="lifecycle-zone-badge">Stage 1</div>
+          <h3 class="lifecycle-zone-title">Money at Rest</h3>
+          <p class="lifecycle-zone-desc">Storing &amp; Securing — The primary record of customer accounts and balances. Foundation of all financial services.</p>
+        </div>
+        <div class="lifecycle-products" role="list">
+          <div class="lifecycle-product" role="listitem">IBS (Integrated Banking Solution)</div>
+          <div class="lifecycle-product" role="listitem">Horizon Banking System</div>
+          <div class="lifecycle-product" role="listitem">Modern Banking Platform</div>
+          <div class="lifecycle-product" role="listitem">Universal Ledger</div>
+          <div class="lifecycle-product" role="listitem">Wealth &amp; Retirement Platform</div>
+        </div>
+        <div class="lifecycle-capabilities">
+          <div class="lifecycle-cap-label">Capabilities</div>
+          <div class="lifecycle-cap-list">
+            <div class="lifecycle-cap-item">Core deposit processing</div>
+            <div class="lifecycle-cap-item">Account management</div>
+            <div class="lifecycle-cap-item">Embedded finance</div>
+            <div class="lifecycle-cap-item">Data-driven products</div>
+            <div class="lifecycle-cap-item">Real-time financial insights</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="lifecycle-arrow-col" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <line x1="4" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.5"/>
+          <path d="M28 15L34 20L28 25" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <!-- Money in Motion -->
+      <div class="lifecycle-zone in-motion">
+        <div class="lifecycle-zone-header">
+          <div class="lifecycle-zone-badge">Stage 2</div>
+          <h3 class="lifecycle-zone-title">Money in Motion</h3>
+          <p class="lifecycle-zone-desc">Transferring &amp; Moving — The rails, networks, and hubs that move money between accounts, institutions, and geographies.</p>
+        </div>
+        <div class="lifecycle-products" role="list">
+          <div class="lifecycle-product" role="listitem">Money Movement Hub (ACH/Wire/RTP)</div>
+          <div class="lifecycle-product" role="listitem">NYCE Network</div>
+          <div class="lifecycle-product" role="listitem">FIS Total Issuing Solutions</div>
+          <div class="lifecycle-product" role="listitem">EFT Services</div>
+          <div class="lifecycle-product" role="listitem">Payment Hub</div>
+          <div class="lifecycle-product" role="listitem">SWIFT Connectivity</div>
+        </div>
+        <div class="lifecycle-capabilities">
+          <div class="lifecycle-cap-label">Capabilities</div>
+          <div class="lifecycle-cap-list">
+            <div class="lifecycle-cap-item">ACH, Wire, Real-time payments</div>
+            <div class="lifecycle-cap-item">Card transaction routing</div>
+            <div class="lifecycle-cap-item">Cross-border transfers</div>
+            <div class="lifecycle-cap-item">A2A transfers</div>
+            <div class="lifecycle-cap-item">Real-time OFAC/fraud screening</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="lifecycle-arrow-col" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <line x1="4" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.5"/>
+          <path d="M28 15L34 20L28 25" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <!-- Money at Work -->
+      <div class="lifecycle-zone at-work">
+        <div class="lifecycle-zone-header">
+          <div class="lifecycle-zone-badge">Stage 3</div>
+          <h3 class="lifecycle-zone-title">Money at Work</h3>
+          <p class="lifecycle-zone-desc">Investing &amp; Balancing — Products that put money to productive use: lending, trading, treasury management, and asset services.</p>
+        </div>
+        <div class="lifecycle-products" role="list">
+          <div class="lifecycle-product" role="listitem">Cross-Asset Trading Platform</div>
+          <div class="lifecycle-product" role="listitem">Treasury Risk &amp; Payment Suite</div>
+          <div class="lifecycle-product" role="listitem">Commercial Lending Platform</div>
+          <div class="lifecycle-product" role="listitem">Wealth &amp; Retirement Platform</div>
+          <div class="lifecycle-product" role="listitem">Securities Processing</div>
+        </div>
+        <div class="lifecycle-capabilities">
+          <div class="lifecycle-cap-label">Capabilities</div>
+          <div class="lifecycle-cap-list">
+            <div class="lifecycle-cap-item">Trading &amp; risk analytics</div>
+            <div class="lifecycle-cap-item">Lending origination &amp; servicing</div>
+            <div class="lifecycle-cap-item">Treasury &amp; liquidity management</div>
+            <div class="lifecycle-cap-item">Asset servicing &amp; reconciliation</div>
+            <div class="lifecycle-cap-item">Wealth management</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== TRANSACTION FLOWS ======================== -->
+<section id="flows" aria-label="Transaction Flow Diagrams">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">04 — Transaction Flows</div>
+    <h2 class="section-title">Transaction Flow Diagrams</h2>
+    <p class="section-desc">Step-by-step transaction flows with FIS product touchpoints at each stage. Scroll horizontally within each flow.</p>
+
+    <div class="flow-tabs" role="tablist" aria-label="Transaction flow types">
+      <button class="flow-tab active" role="tab" aria-selected="true" aria-controls="flow-card" onclick="switchFlow('flow-card', this)">Card Payment</button>
+      <button class="flow-tab" role="tab" aria-selected="false" aria-controls="flow-account" onclick="switchFlow('flow-account', this)">Account Opening</button>
+      <button class="flow-tab" role="tab" aria-selected="false" aria-controls="flow-money" onclick="switchFlow('flow-money', this)">Money Movement</button>
+      <button class="flow-tab" role="tab" aria-selected="false" aria-controls="flow-lending" onclick="switchFlow('flow-lending', this)">Lending</button>
+      <button class="flow-tab" role="tab" aria-selected="false" aria-controls="flow-cm" onclick="switchFlow('flow-cm', this)">Capital Markets Trade</button>
+      <button class="flow-tab" role="tab" aria-selected="false" aria-controls="flow-treasury" onclick="switchFlow('flow-treasury', this)">Treasury Operations</button>
+    </div>
+
+    <!-- Card Payment Flow -->
+    <div class="flow-panel active" id="flow-card" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Card payment flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Cardholder Initiates</div>
+              <div class="flow-step-fis">Cardholder / App</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">POS / Digital Channel</div>
+              <div class="flow-step-fis">Digital One</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">EFT / Network Routing</div>
+              <div class="flow-step-fis">NYCE Network</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">Issuer Processing</div>
+              <div class="flow-step-fis">Total Issuing Solutions</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Fraud / Risk Screen</div>
+              <div class="flow-step-fis">Fraud Detection (AI/ML)</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Authorization Response</div>
+              <div class="flow-step-fis">Total Issuing Solutions</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">Settlement</div>
+              <div class="flow-step-fis">Payment Network</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">08</div>
+              <div class="flow-step-name">Core Ledger Updated</div>
+              <div class="flow-step-fis">IBS / Horizon / MBP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Opening Flow -->
+    <div class="flow-panel" id="flow-account" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Account opening flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Customer Applies</div>
+              <div class="flow-step-fis">Digital One / Branch</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">KYC / Identity Verify</div>
+              <div class="flow-step-fis">KYC/AML Solutions</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">Risk Assessment</div>
+              <div class="flow-step-fis">Account Decisioning</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">Account Creation</div>
+              <div class="flow-step-fis">Core Processing (IBS/MBP)</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Card Issuance</div>
+              <div class="flow-step-fis">Total Issuing Solutions</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Digital Provisioning</div>
+              <div class="flow-step-fis">Digital One</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">Onboarding / Welcome</div>
+              <div class="flow-step-fis">Digital One Targeted Engagement</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Money Movement Flow -->
+    <div class="flow-panel" id="flow-money" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Money movement flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Initiation</div>
+              <div class="flow-step-fis">Customer / Corporate</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">Payment Type Selection</div>
+              <div class="flow-step-fis">Digital One / FIS Biz Hub</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">Hub Routes to Rail</div>
+              <div class="flow-step-fis">Money Movement Hub</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">OFAC / Fraud Screen</div>
+              <div class="flow-step-fis">Fraud Detection / Risk Scoring</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Clearing / Settlement</div>
+              <div class="flow-step-fis">NYCE Network / Rails</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Ledger Update</div>
+              <div class="flow-step-fis">Universal Ledger / Core</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">Notification</div>
+              <div class="flow-step-fis">Digital One Targeted Engagement</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lending Flow -->
+    <div class="flow-panel" id="flow-lending" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Lending flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Application</div>
+              <div class="flow-step-fis">Digital One / Branch</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">Credit Assessment</div>
+              <div class="flow-step-fis">Lending Solutions</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">Risk Rating</div>
+              <div class="flow-step-fis">Risk Management</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">Underwriting / Decisioning</div>
+              <div class="flow-step-fis">Commercial Lending Platform</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Loan Booking</div>
+              <div class="flow-step-fis">Core Processing / Ledger</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Servicing / Collections</div>
+              <div class="flow-step-fis">Lending Solutions / Collections</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">Secondary Market</div>
+              <div class="flow-step-fis">Syndicated Loans Platform</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capital Markets Trade Flow -->
+    <div class="flow-panel" id="flow-cm" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Capital markets trade flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Order Entry</div>
+              <div class="flow-step-fis">Cross-Asset Trading Platform</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">Pre-trade Compliance</div>
+              <div class="flow-step-fis">Risk Management</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">Order Execution</div>
+              <div class="flow-step-fis">Cross-Asset Trading Platform</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">Trade Capture</div>
+              <div class="flow-step-fis">Securities Processing</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Clearing / Settlement</div>
+              <div class="flow-step-fis">Cleared Derivatives</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Position Keeping</div>
+              <div class="flow-step-fis">Investment Accounting</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">P&amp;L / Risk Reporting</div>
+              <div class="flow-step-fis">Reconciliation / Risk Analytics</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">08</div>
+              <div class="flow-step-name">Regulatory Reporting</div>
+              <div class="flow-step-fis">Risk &amp; Program Management</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Treasury Operations Flow -->
+    <div class="flow-panel" id="flow-treasury" role="tabpanel">
+      <div class="flow-diagram">
+        <div class="flow-chain" aria-label="Treasury operations flow steps">
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-name">Cash Position Gathering</div>
+              <div class="flow-step-fis">Treasury Suite</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-name">Liquidity Forecasting</div>
+              <div class="flow-step-fis">Cash Forecasting</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-name">Investment / Funding Decision</div>
+              <div class="flow-step-fis">Treasury Management</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-name">Deal Execution</div>
+              <div class="flow-step-fis">FX / IR / Commodity Risk</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-name">Payment Processing</div>
+              <div class="flow-step-fis">Payment Hub / SWIFT</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">06</div>
+              <div class="flow-step-name">Confirmation / Reconciliation</div>
+              <div class="flow-step-fis">SWIFT Connectivity</div>
+            </div>
+          </div>
+          <div class="flow-connector" aria-hidden="true"><div class="flow-connector-line"></div><svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 4h6M3 1l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="flow-step">
+            <div class="flow-step-box">
+              <div class="flow-step-num">07</div>
+              <div class="flow-step-name">Accounting / Reporting</div>
+              <div class="flow-step-fis">Risk Analytics / Treasury Suite</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== GLOSSARY ======================== -->
+<section id="glossary" aria-label="Industry Glossary">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">05 — Reference</div>
+    <h2 class="section-title">Industry Glossary</h2>
+    <p class="section-desc">Key terms used across FIS's platform, products, and the financial technology industry. Click any term to expand its definition.</p>
+
+    <div class="glossary-grid" role="list" aria-label="Industry terms">
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">ACH</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Automated Clearing House — US batch payment system for direct deposits, bill payments, B2B transfers.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">API Gateway</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Entry point that manages, secures, and routes API calls to backend services.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Acquiring</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Merchant-side payment processing. FIS exited this space via the Worldpay divestiture (2024).</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">BaaS (Banking as a Service)</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Enabling non-banks to offer banking products via APIs. The FIS platform enables BaaS through Code Connect and modular services.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Buy Side</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Investment firms that buy securities: asset managers, hedge funds, PE firms. FIS serves buy-side clients through the Capital Markets segment.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Componentized Architecture</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Breaking monolithic systems into independent, reusable modules that can be deployed separately. Enables FIS's incremental modernization approach.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Core Banking</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Central system maintaining customer accounts, deposits, loans. The "system of record." FIS's core products include IBS, Horizon, and the Modern Banking Platform.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Core-Agnostic</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Platform works regardless of which core system (FIS or non-FIS) processes underneath. A key FIS differentiator allowing adoption without core replacement.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Coreless Banking</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Operating without a traditional core system, using a universal ledger instead. Designed for neobanks and digital-only financial institutions.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">DORA</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Digital Operational Resilience Act — EU regulation for ICT risk management in financial services. FIS is designated as a Critical Third-Party Provider under DORA.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">EFT (Electronic Funds Transfer)</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Electronic movement of money between accounts, including ATM, POS, and network transactions. FIS operates the NYCE network for EFT.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">FFIEC</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Federal Financial Institutions Examination Council — US regulator that examines FIS as a technology service provider to banks.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Front-to-Back</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Complete coverage of a process from customer-facing (front) through middle-office to back-office operations. FIS's Capital Markets solutions offer front-to-back trade lifecycle coverage.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Issuer Processing</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Technology that enables banks (issuers) to issue and process credit/debit cards. FIS Total Issuing Solutions is one of the world's largest issuer processing platforms.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">KYC / AML</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Know Your Customer / Anti-Money Laundering — regulatory compliance for identity verification and suspicious activity detection.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Ledger</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">The foundational record-keeping system that tracks all debits, credits, and balances. FIS's Universal Ledger underpins all platform products.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Open Banking</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Third-party access to banking data/services via APIs. Code Connect is FIS's open banking enabler and API marketplace.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Orchestration Layer</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Middleware that coordinates multiple services/systems to complete a business process. L2 of the FIS platform stack.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Payment Rails</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Infrastructure/networks over which payments travel: ACH, wire, instant payments, card networks. FIS Money Movement Hub connects to all major rails via a single API.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Real-Time Payments (RTP)</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Instant payment systems that clear and settle immediately. Supported by FIS Money Movement Hub launched May 2025.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Reconciliation</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Matching transaction records across systems to ensure consistency and accuracy. Core function in FIS Capital Markets product suite.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Sell Side</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Firms that sell/create securities: broker-dealers, investment banks. FIS Cross-Asset Trading Platform serves sell-side market makers and trading firms.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">SWIFT</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Global messaging network for interbank financial transactions. FIS is a top-5 SWIFT partner, providing connectivity through the Treasury &amp; Risk Suite.</div>
+      </div>
+
+      <div class="glossary-item" role="listitem" data-open="false">
+        <div class="glossary-term" role="button" tabindex="0" onclick="toggleGlossary(this.parentElement)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleGlossary(this.parentElement)">
+          <span class="glossary-term-text">Transfer Agency</span>
+          <span class="glossary-toggle" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        </div>
+        <div class="glossary-def" role="definition">Service that maintains records of mutual fund shareholders and processes purchases/redemptions. Part of FIS Trading &amp; Asset Services.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== VALUE DELIVERY ======================== -->
+<section id="value" aria-label="Value Delivery Matrix">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">06 — Value Map</div>
+    <h2 class="section-title">Value Delivery Matrix</h2>
+    <p class="section-desc">How FIS creates value for each key stakeholder group across the financial ecosystem.</p>
+
+    <div class="value-matrix">
+
+      <!-- Banks -->
+      <div class="value-col">
+        <div class="value-col-header">
+          <div class="value-col-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 3L2 9h20L12 3z"/><path d="M12 9v12"/><path d="M8 12v6M16 12v6"/></svg>
+          </div>
+          <h3 class="value-col-title">Banks</h3>
+          <p class="value-col-sub">Global FIs, regional banks, credit unions</p>
+        </div>
+        <div class="value-col-body">
+          <div class="value-prop">Modernize without rip-and-replace via componentized architecture</div>
+          <div class="value-prop">Reduce IT costs through cloud-native shared infrastructure</div>
+          <div class="value-prop">Launch products faster via Code Connect API marketplace</div>
+          <div class="value-prop">Comprehensive fraud/risk protection with AI-powered real-time detection</div>
+          <div class="value-prop">Single platform for all banking functions (deposits, lending, payments, cards, wealth)</div>
+          <div class="value-prop">Regulatory compliance built-in (KYC/AML, FFIEC, DORA)</div>
+          <div class="value-prop">Omnichannel digital experience via Digital One</div>
+        </div>
+      </div>
+
+      <!-- End Customers -->
+      <div class="value-col">
+        <div class="value-col-header">
+          <div class="value-col-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h3 class="value-col-title">End Customers</h3>
+          <p class="value-col-sub">Bank customers &amp; consumers</p>
+        </div>
+        <div class="value-col-body">
+          <div class="value-prop">Seamless digital banking across mobile, web, branch, ATM</div>
+          <div class="value-prop">Real-time payments and instant money movement</div>
+          <div class="value-prop">Better fraud protection through AI-powered monitoring</div>
+          <div class="value-prop">Personalized financial products powered by data/AI</div>
+          <div class="value-prop">24/7 access to banking services</div>
+          <div class="value-prop">Faster account opening and loan processing</div>
+        </div>
+      </div>
+
+      <!-- FIS Itself -->
+      <div class="value-col">
+        <div class="value-col-header">
+          <div class="value-col-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <h3 class="value-col-title">FIS (the company)</h3>
+          <p class="value-col-sub">Business model &amp; economics</p>
+        </div>
+        <div class="value-col-body">
+          <div class="value-prop">Multi-year recurring revenue contracts with high retention</div>
+          <div class="value-prop">Cross-sell/upsell across comprehensive product suite</div>
+          <div class="value-prop">Platform economics: one-to-many model drives high incremental margins</div>
+          <div class="value-prop">Data network effects: more transactions = better AI = better products</div>
+          <div class="value-prop">Expanded $28B addressable market with Issuer Solutions acquisition</div>
+          <div class="value-prop">High switching costs create durable competitive moat</div>
+        </div>
+      </div>
+
+      <!-- Capital Markets Clients -->
+      <div class="value-col">
+        <div class="value-col-header">
+          <div class="value-col-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 20h20M4 20V10l8-7 8 7v10"/><path d="M9 20v-7h6v7"/></svg>
+          </div>
+          <h3 class="value-col-title">Capital Markets Clients</h3>
+          <p class="value-col-sub">Asset managers, broker-dealers, insurers</p>
+        </div>
+        <div class="value-col-body">
+          <div class="value-prop">Front-to-back trade lifecycle management</div>
+          <div class="value-prop">Real-time risk analytics and position management</div>
+          <div class="value-prop">Multi-asset class support (equities, derivatives, FX, commodities, PE, credit)</div>
+          <div class="value-prop">Regulatory compliance automation (AML, trade surveillance)</div>
+          <div class="value-prop">Treasury and liquidity optimization</div>
+          <div class="value-prop">SWIFT connectivity and global reach</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== TIMELINE ======================== -->
+<section id="timeline" aria-label="Strategic Timeline">
+  <div class="page-container">
+    <div class="section-label" aria-hidden="true">07 — Strategic Moves</div>
+    <h2 class="section-title">Recent Strategic Moves</h2>
+    <p class="section-desc">Key strategic events shaping FIS's transformation from a broad-based fintech to a focused banking and capital markets platform.</p>
+
+    <div class="timeline" role="list" aria-label="Strategic events timeline">
+
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">2024</div>
+        <div class="timeline-badge badge-divest">Divestiture</div>
+        <h3 class="timeline-title">Worldpay 55% Sale</h3>
+        <p class="timeline-desc">FIS sold 55% of Worldpay merchant acquiring business. Remaining 45% later sold to Global Payments in Jan 2026 for $6.6B. FIS exits merchant acquiring entirely to focus on issuing and banking technology.</p>
+      </div>
+
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">April 2025</div>
+        <div class="timeline-badge badge-acquire">Acquisition Announced</div>
+        <h3 class="timeline-title">Issuer Solutions Acquisition Announced</h3>
+        <p class="timeline-desc">FIS announces agreement to acquire Global Payments' Issuer Solutions business (formerly TSYS) for $13.5B ($12B net). The deal adds 40B+ transactions/year, 150+ FI partners, and 75+ country presence in credit processing.</p>
+      </div>
+
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">May 2025</div>
+        <div class="timeline-badge badge-product">Product Launch</div>
+        <h3 class="timeline-title">Money Movement Hub Launch</h3>
+        <p class="timeline-desc">FIS launches cloud-native (AWS) Money Movement Hub — a single API for instant payments, ACH, and wire transfers. Core-agnostic, pay-as-you-grow model. Built-in real-time OFAC screening, transaction monitoring, and risk scoring.</p>
+      </div>
+
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">September 2025</div>
+        <div class="timeline-badge badge-strategy">Strategy</div>
+        <h3 class="timeline-title">Bank Modernization Framework</h3>
+        <p class="timeline-desc">FIS introduces "Client at the Core" bank modernization framework — a componentized, incremental modernization approach that allows banks to modernize without full rip-and-replace. Supports FIS core, third-party core, and coreless deployment modes.</p>
+      </div>
+
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">January 12, 2026</div>
+        <div class="timeline-badge badge-acquire">Acquisition Closed</div>
+        <h3 class="timeline-title">Issuer Solutions Acquisition Closed</h3>
+        <p class="timeline-desc">FIS completes $13.5B acquisition of Global Payments Issuer Solutions. Branded as "FIS Total Issuing Solutions." Creates one of the world's largest credit card issuing platforms. Expands FIS total addressable market to $28B.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="page-container">
+    <div class="footer-content">
+      <div class="footer-sources">
+        <div class="footer-sources-title">Sources &amp; References</div>
+        <ul class="source-list" role="list">
+          <li><a href="https://www.fintechwrapup.com/p/deep-dive-unwrapping-fiss-technology" target="_blank" rel="noopener noreferrer">Fintech Wrapup — Deep Dive: Unwrapping FIS's Technology</a></li>
+          <li><a href="https://www.fisglobal.com/products" target="_blank" rel="noopener noreferrer">FIS Products — fisglobal.com</a></li>
+          <li><a href="https://www.fisglobal.com/about-us/media-room/press-release/2026/fis-completes-strategic-acquisition-of-global-payments-issuer-solutions-business" target="_blank" rel="noopener noreferrer">FIS Issuer Solutions Acquisition Announcement (Jan 2026)</a></li>
+          <li><a href="https://www.fisglobal.com/about-us/media-room/press-release/2025/fis-harmonizes-payments-with-launch-of-unified-money-movement-hub" target="_blank" rel="noopener noreferrer">FIS Money Movement Hub Launch (May 2025)</a></li>
+          <li><a href="https://www.fisglobal.com/about-us/media-room/press-release/2025/fis-redefines-banking-modernization-with-client-at-the-core" target="_blank" rel="noopener noreferrer">FIS Bank Modernization Framework (Sep 2025)</a></li>
+          <li><a href="https://www.fisglobal.com/products/fis-modern-banking-platform" target="_blank" rel="noopener noreferrer">FIS Modern Banking Platform</a></li>
+          <li><a href="https://www.fisglobal.com/products/digital-one" target="_blank" rel="noopener noreferrer">FIS Digital One</a></li>
+          <li><a href="https://www.fisglobal.com/products/fis-cross-asset-trading-and-risk-platform" target="_blank" rel="noopener noreferrer">FIS Cross-Asset Trading &amp; Risk Platform</a></li>
+          <li><a href="https://www.fisglobal.com/products/treasury-risk-and-payment-suite" target="_blank" rel="noopener noreferrer">FIS Treasury Risk &amp; Payment Suite</a></li>
+          <li><a href="https://www.stocktitan.net/sec-filings/FIS/10-k-fidelity-national-information-services-inc-files-annual-report-faa6cf780c27.html" target="_blank" rel="noopener noreferrer">FIS 10-K Annual Report 2025</a></li>
+        </ul>
+      </div>
+      <div class="footer-copy">
+        <div>
+          <svg width="32" height="32" viewBox="0 0 28 28" fill="none" aria-hidden="true" style="color: var(--color-primary); margin-bottom: var(--space-2);">
+            <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" opacity="0.9"/>
+            <rect x="15" y="2" width="11" height="11" rx="2" fill="currentColor" opacity="0.5"/>
+            <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" opacity="0.5"/>
+            <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" opacity="0.7"/>
+          </svg>
+        </div>
+        <div style="font-size: var(--text-xs); color: var(--color-text-faint);">FIS Platform Map</div>
+        <div style="font-size: var(--text-xs); color: var(--color-text-faint);">For research &amp; analysis purposes only.</div>
+        <div style="font-size: var(--text-xs); color: var(--color-text-faint);">Not affiliated with Fidelity National Information Services, Inc.</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ======================== JAVASCRIPT ======================== -->
+<script>
+  // Theme toggle
+  (function() {
+    const toggle = document.querySelector('[data-theme-toggle]');
+    const root = document.documentElement;
+    let theme = 'dark'; // default dark
+    root.setAttribute('data-theme', theme);
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        toggle.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+        toggle.innerHTML = theme === 'dark'
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+      });
+    }
+  })();
+
+  // Toggle segment cards
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    const isOpen = card.dataset.open === 'true';
+    card.dataset.open = !isOpen;
+    const btn = card.querySelector('.segment-header');
+    if (btn) btn.setAttribute('aria-expanded', !isOpen);
+  }
+
+  // Keyboard support for segment cards
+  document.querySelectorAll('.segment-header').forEach(header => {
+    header.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        header.click();
+      }
+    });
+  });
+
+  // Toggle glossary items
+  function toggleGlossary(item) {
+    const isOpen = item.dataset.open === 'true';
+    item.dataset.open = !isOpen;
+  }
+
+  // Switch flow tabs
+  function switchFlow(panelId, btn) {
+    // Deactivate all
+    document.querySelectorAll('.flow-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
+
+    // Activate selected
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    const panel = document.getElementById(panelId);
+    if (panel) panel.classList.add('active');
+  }
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(s => {
+      const top = s.getBoundingClientRect().top;
+      if (top <= 80) current = s.id;
+    });
+    navLinks.forEach(link => {
+      link.style.color = '';
+      if (link.getAttribute('href') === '#' + current) {
+        link.style.color = 'var(--color-primary)';
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav();
+</script>
+
+</body>
+</html>
